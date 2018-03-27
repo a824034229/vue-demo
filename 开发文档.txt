@@ -1,0 +1,70 @@
+在命令行中输入
+输入 npm install 加载项目依赖
+输入 npm run dev 启动项目
+输入 npm run build 打包项目,打包后的项目会在 dist 目录下
+目前所用框架 vue + vuex + vue-router + element-ui + axios
+
+项目入口文件： src/main.js
+
+/*******************************/
+
+            手册区:
+  vue.js :       https://cn.vuejs.org/v2/guide/
+  vuex :         https://vuex.vuejs.org/zh-cn/
+  vue-router :   https://router.vuejs.org/zh-cn/
+  axios :        https://www.kancloud.cn/yunye/axios/234845
+  element-ui :   http://element-cn.eleme.io/#/zh-CN/component/installation
+  ECMAScript2015  (ES6) 规范   http://es6.ruanyifeng.com/
+
+/*******************************/
+
+/*******************************/
+    ECMAScript2015 又称( ES6 ) 写法示例  关于 ES6 可查看阮一峰老师写的 ECMAScript2015 书籍  http://es6.ruanyifeng.com/
+    const 定义一个常量
+
+    const userInfo = state => state.userInfo
+    上面这种写法相当于  var userInfo = function(state){ return state.userInfo }   , 详情可看 书 中 函数的扩展
+    () => { }  这种写法是函数的缩写， 相当于 function() {}  , 注意： 这个缩写 会让 this 的指向 改变为指向 上下文 而不是函数内部
+
+/*******************************/
+
+
+/*******************************/
+          兼容性区
+ 1. forEach 循环经过 babel-polyfill 转换后出错 , 更改方案 ： 1.更改 为 map ，2. 转为普通的 for 循环
+  JSON.parse(JSON.stringify(this.greenList)) 深拷贝数组或对象
+
+/*******************************/
+
+
+/*******************************/
+          文件注释区 （src 目录下）
+  base 目录
+    alert 弹窗组件
+    calculator 计算器
+    order 订单列表
+    qr-code 二维码
+    scroll 滚动组件，暂未完善
+    tab-control 上方菜单栏
+
+  common 目录（可共用基础组件）
+    stylus 里面存放一些全局的 css 变量
+    images 存放图片
+    js 存放一些公用的 js 代码
+
+  components （页面级组件）
+    dining-table  餐桌信息页面
+    left-nav      左边的固定导航栏
+    menu-list     菜单
+    right-order   菜单页面中的 右边 （这个组件有点多余，之后会精简掉）
+    settle-accounts  结账页面
+
+  router 目录 路由配置文件
+
+  store 目录 状态管理仓库
+    index.js 入口
+    state.js 仓库里有的变量，如需添加请在这里面添加
+    getters.js 定义获取数据的方法
+    mutations.js 定义设置数据的方法
+    actions.js  当需要异步或一次改变多个数据时， 写在这里
+/*******************************/
