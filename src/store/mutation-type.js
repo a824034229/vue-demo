@@ -1,0 +1,7 @@
+export const SET_USERINFO = 'SET_USERINFO'
+
+export const SET_ORDERINFO = 'SET_ORDERINFO'
+
+export const SET_CURRENTTABLE = 'SET_CURRENTTABLE'
+
+export const SET_DININGLIST = 'SET_DININGLIST'

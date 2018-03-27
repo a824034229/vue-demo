@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script>
+    var Event = {
+      on: function(eventName, callback){
+        if(!this.handles){
+//          this.handles = {}
+          Object.defineProperty(this,"handles",{
+            value: {},
+            enumerable: false, /* 是否可枚举 */
+            configurable: true, /* 是否可删除 */
+            writable: true,    /* value 值是否可被运算符改变 */
+          })
+        }
+        if(!this.handles[eventName]){
+          this.handles[eventName] = []
+        }
+        this.handles[eventName].push(callback)
+      },
+      emit: function(eventName,callback){
+        if(this.handles[eventName]){
+           this.handles[eventName].forEach((item) => {
+             item(callback)
+           })
+        }
+      }
+    }
+    Event.on('test',function(e){
+      console.log(e);
+    })
+
+    Event.emit('test',111)
+</script>
+</html>

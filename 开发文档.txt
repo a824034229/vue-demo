@@ -1,0 +1,27 @@
+在命令行中输入
+输入 npm install 加载项目依赖
+输入 npm run dev 启动项目
+输入 npm run build 打包项目,打包后的项目会在 dist 目录下
+目前所用框架 vue + vuex + vue-router + element-ui + axios
+
+页面路由在 src/router/index.js 下可查看，
+需要全局共享的变量及 变量的操作 文件在  src/store 目录中
+在 src/store/state.js 中定义变量 ,
+在src/store/mutations.js 中定义操作方法，
+在src/store/actives.js 中定义需要一次操作多个数据的方法,
+在src/store/getters 中定义 获取数据的方法
+
+在 src/common 中存储 公共资源， 例如 图片、JS 、CSS
+在 src/base 中 编写可共用的基础组件，
+在 src/components 中 编写业务组件
+
+项目入口文件： src/main.js
+
+/*******************************/
+          手册区:
+vue.js :       https://cn.vuejs.org/v2/guide/
+vuex :         https://vuex.vuejs.org/zh-cn/
+vue-router :   https://router.vuejs.org/zh-cn/
+axios :        https://www.kancloud.cn/yunye/axios/234845
+element-ui :   http://element-cn.eleme.io/#/zh-CN/component/installation
+/*******************************/
