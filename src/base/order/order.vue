@@ -36,13 +36,14 @@
 
                     </span>
                 </div>
-                <div class="money">{{item.num * item.money}} 元</div>
+                <div class="money">{{getCurrentGreenMoney(item)}} 元</div>
             </li>
         </ul>
 
         <div class="clearing" v-show="showFlag">
             <p>菜品金额：￥{{totalAmount}} 元</p>
             <p>应付金额：￥{{amountPayable}} 元</p>
+            <p>已优惠：￥{{countDiscounts}} 元</p>
         </div>
 
         <div class="btn-group" :style="{bottom: bottom + 'px'}" v-if="showFlag">
@@ -55,6 +56,7 @@
 
 <script>
   import formatDate from '@/common/js/formatDate'
+  import {mapGetters} from 'vuex'
 
   export default {
     props: {
@@ -69,10 +71,6 @@
             date: formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss')
           }
         }
-      },
-      discounts: {
-        type: Number,
-        default: 0
       },
       bottom: {
         type: Number,
@@ -89,27 +87,40 @@
       num: {
         type: [Number, String],
         default: 0
-      }
+      },
     },
     data(){
-      return {}
+      return {
+        haveDiscount: 0,
+        countDiscounts: 0,      /* 已优惠 */
+        amountPayable: 0,       /* 应付金额 */
+      }
     },
     computed: {
+      ...mapGetters(['maxDiscounts','discounts']),
       totalAmount(){
         let num = 0
-
+        let amountPayable = 0
         /*this.list.forEach((item) => {
           num += item.money * item.num
         })*/
-        this.list.map((item) => {
-          num += item.money * item.num
-        })
-
-        return num
-      },
-      amountPayable(){
-        let tot = this.totalAmount - this.discounts
-        return tot > 0 ? tot : 0
+        if(this.list instanceof Array){
+          this.list.map((item) => {
+            num += item.money * item.num
+            let temp = 0
+            if(item.discounts.type === 1){
+              temp = item.money * item.num -  item.discounts.num * item.money * item.num
+            }else if(item.discounts.type === 2){
+              temp =  item.discounts.num * item.num
+            }else{
+              temp = 0
+            }
+            amountPayable += temp
+          })
+        }
+        this.amountPayable = parseFloat(num - amountPayable).toFixed(2)     /* 应付金额 */
+        this.countDiscounts = parseFloat(amountPayable).toFixed(2)          /* 已优惠金额 */
+        return parseFloat(num).toFixed(2)                                      /* 菜品金额 */
       }
     },
     mounted(){
@@ -134,12 +145,27 @@
       },
       getAmountPayable(){
         return this.amountPayable
+      },
+      getCurrentGreenMoney(item){
+        let money = item.money ;
+        let num = item.num
+        let count = 0
+        if(this.haveDiscount >= this.maxDiscounts){
+
+        }
+        if(item.discounts.type === 1){
+          count = item.discounts.num * num * money
+        }else if(item.discounts.type === 2){
+          count = (num * money) - item.discounts.num * num
+        }else{
+          count = num * money
+        }
+
+//        this.maxDiscounts
+//        this.discounts
+        return count
       }
     },
-    watch: {
-
-
-    }
   }
 </script>
 

@@ -14,3 +14,7 @@ export const setTitle = {
     }
   }
 }
+
+export const getCurrentGreenMoney = function(item){
+
+}

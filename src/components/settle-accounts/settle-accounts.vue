@@ -37,7 +37,7 @@
                             </div>
                             <div>
                                 <div class="left">
-                                    找零
+                                    优惠
                                 </div>
                                 <div class="right">
                                     ￥{{change}}
@@ -104,7 +104,7 @@
     computed: {
       ...mapGetters(['orderInfo', 'currentOrder']),
       change(){
-        return this.total - this.pay
+        return parseFloat(this.total - this.pay).toFixed(2)
       }
     },
     methods: {

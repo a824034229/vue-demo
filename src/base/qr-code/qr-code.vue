@@ -41,7 +41,7 @@
 
     .fade-enter,.fade-leave-to
         opacity 0
-
+        transform scale(1.1)
     .qr-code
         position fixed
         width 100vw

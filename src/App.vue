@@ -1,5 +1,5 @@
 <template>
-    <div id="app" @click.stop="clickScreen">
+    <div id="app" @click.stop="clickScreen" oncontextmenu="return false" >
         <left-nav ></left-nav>
         <router-view/>
     </div>
@@ -18,6 +18,9 @@
     methods:{
       clickScreen(){
 
+      },
+      rightHand(e){
+        console.log(e,'e');
       }
     },
     components:{
@@ -36,4 +39,5 @@
         background-color $background-color-default
         width 100%
         min-height 100vh
+        overflow hidden
 </style>

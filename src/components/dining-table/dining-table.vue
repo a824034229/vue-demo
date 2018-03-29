@@ -4,8 +4,12 @@
         <tab-control :active="mode" title="餐桌信息" :list="tabList" @select="selectItem"></tab-control>
 
         <div class="dining-list">
-            <ul>
-                <li v-for="(item,index) in filterList" :class="item.status === 0 ? '' : 'active'" >
+            <ul >
+                <li v-for="(item,index) in filterList"
+                    :class="item.status === 0 ? '' : 'active'"
+                    :data-index="index"
+                    @contextmenu.prevent="rightHand($event,item)">
+
                     <div v-show="item.status === 0" @click.stop="showInput(item)">
                         <p>{{item.name}}</p>
                         <p>空桌 </p>
@@ -44,14 +48,28 @@
                         v-model.number="humanNum"
                         :min="min"
                         :max="max">
+
+                    <el-button slot="prepend" type="success" round @click.stop="addMan">加1</el-button>
+                    <el-button slot="prepend" type="success" round @click.stop="subMan ">减1</el-button>
+
                     <template slot="append">人</template>
                 </el-input>
+
                 <span slot="footer" class="dialog-footer">
                 <el-button @click="cancel">取 消</el-button>
                 <el-button type="primary" @click="affirm">确 定</el-button>
             </span>
             </el-dialog>
         </div>
+
+        <right-hand
+                :showFlag="showRightHand"
+                :left="clientLeft"
+                :list="rightMenu"
+                @hide="hideFlag(false)"
+                :top="clientTop">
+
+        </right-hand>
 
     </div>
 </template>
@@ -61,26 +79,33 @@
   import tabControl from '@/base/tab-control/tab-control'
   import {mapMutations,mapGetters} from 'vuex'
   import {setTitle} from '@/common/js/mixins'
-
+  import rightHand from '@/base/right-hand/right-hand'
 
   export default {
     name: 'dining-table',
     mixins: [setTitle],
     data(){
       return {
-        tabList: [
+        tabList: [                /* 选项列表 */
           {mode: 1, name: '全部'},
           {mode: 0, name: '空桌'},
           {mode: 2, name: '就餐'},
           {mode: 3, name: '预定'}
-        ],          /* 选项列表 */
-        mode: 0,                  /* 显示列表模式 */
+        ],
+        mode: 1,                  /* 显示列表模式 */
         showFlag: false,        /* 是否显示弹窗 */
         dialogVisible: false,   /* 是否显示 Element alert弹窗 */
         humanNum: 4,             /* 就餐人数 */
         currentTable: {},       /* 当前桌 */
-        max: 8,
-        min: 1
+        max: 8,                  /* 每桌最大就餐人数 */
+        min: 1,                  /* 每桌最小就餐人数 */
+        showRightHand: false,   /* 是否显示右键列表 */
+        clientLeft: 0,          /* 右键列表距离屏幕 左边的距离 */
+        clientTop: 0,            /* 右键列表距离屏幕顶部的距离 */
+        rightMenu: [        /* 右键菜单栏显示的列表 */
+          {name: '下单'},
+          {name: '结账'},
+        ],
       }
     },
     computed:{
@@ -96,9 +121,15 @@
       ...mapGetters(['diningList'])
     },
     created(){
-
       this.setTitle('餐桌信息')
-
+    },
+    mounted(){
+      let self = this
+      window.addEventListener('click', self.hideFlag)
+    },
+    destoryed(){
+      let self = this
+      window.removeEventListener('click',self.hideFlag)
     },
     methods: {
       ...mapMutations({
@@ -114,8 +145,10 @@
         this.currentTable = item
       },
       hideFlag(bool){
-        this.showFlag = bool;
-        this.dialogVisible = bool
+        bool = !!bool
+        this.showFlag = false;
+        this.dialogVisible = false
+        this.showRightHand = false
       },    /* 隐藏弹窗 */
       showInput(item){
         this.dialogVisible = true
@@ -149,10 +182,17 @@
       },            /* 确认 input */
       getItemMoney(infos){      /* 计算该桌消费金额 */
         let num = 0;
+        let temp;
         infos.map((item) => {
-          num += item.money * item.num
+          temp = item.money * item.num
+          if(item.discounts.type === 1){
+            temp *= item.discounts.num
+          }else if(item.discounts.type === 2){
+            temp -= item.discounts.num * item.num
+          }
+          num += temp
         })
-        return num
+        return parseFloat(num).toFixed(2)
       },
       point(){                  /* 点菜 */
         this.hideFlag(false)
@@ -170,7 +210,7 @@
         }
         this.hideFlag(false)
       },
-      examineNum(){
+      examineNum(){         /* 验证人数 */
         let status = true
         if(this.humanNum > this.max){
           this.humanNum = this.max
@@ -183,11 +223,51 @@
           this.$message('人数已更改');
         }
         return status
+      },
+      addMan(){         /* 加一人 */
+        if(this.humanNum < this.max){
+          this.humanNum += 1
+        }
+      },
+      subMan(){         /* 减一人 */
+        if(this.humanNum > this.min){
+          this.humanNum -= 1
+        }
+      },
+      rightHand(e,item){
+        let path = e.path;
+        let li = false;
+        for(let i=0; i<path.length; i++){
+          if(path[i].tagName === 'LI' && path[i].getAttribute('data-index') != null ){
+            li = path[i]
+            break
+          }
+        }
+        if(li){
+          this.clientLeft = e.clientX
+          this.clientTop = e.clientY
+          for(let i = 0; i < this.rightMenu.length; i++){
+            this.rightMenu[i]['func'] = function(){
+               if(i === 0){
+                 this.showInput(item)
+               }else{
+                 this.showAlert(item)
+               }
+               this.showRightHand = false
+            }.bind(this)
+          }
+          this.showRightHand = true
+        }else{
+          this.showRightHand = false
+        }
+
+        return false
       }
     },
     components: {
       Alert,
-      tabControl
+      tabControl,
+      rightHand
     }
   }
 </script>

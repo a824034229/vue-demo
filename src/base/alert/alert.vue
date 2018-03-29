@@ -17,10 +17,10 @@
                             </li>
                             <li v-for="(item, index) in infos" :key="index">
                                 <div class="cls">
-                                   {{index + 1}} {{item.name}}
+                                    {{index + 1}} {{item.name}}
                                 </div>
                                 <div class="num">{{item.num}}份</div>
-                                <div class="money">{{item.money}}</div>
+                                <div class="money">{{getCurrentMoney(item)}} 元</div>
                             </li>
                         </ul>
 
@@ -40,71 +40,82 @@
 </template>
 
 <script>
-    export default {
-      name: 'alert',
-      props: {
-        infos: {
-          type: Array,
-          default: null
-        },
-        showFlag: {
-          type: Boolean,
-          default: false
-        },
-        id : {
-          type: [String,Number],
-          default: 0
-        },
-        orderID : {
-          type: [String,Number],
-          default: 0
-        },
-        date : {
-          type: [String,Number],
-          default: 0
-        }
+  export default {
+    name: 'alert',
+    props: {
+      infos: {
+        type: Array,
+        default: null
       },
-      data(){
-        return {
-          bottom: 0
-        }
+      showFlag: {
+        type: Boolean,
+        default: false
       },
-      mounted(){
-        if(this.$refs.context){
-          this.$refs.alert.addEventListener('scroll',this.handleScroll)
-        }
+      id: {
+        type: [String, Number],
+        default: 0
       },
-      destroyed(){
+      orderID: {
+        type: [String, Number],
+        default: 0
       },
-      methods:{
-        hideFlag(bool){
-          if(typeof bool !== 'boolean'){
-            bool = !!bool;
-          }
-          this.$emit('hide',bool)
-        },
-        handleScroll(event){
-          this.bottom = - event.target.scrollTop
-          console.log(this.bottom);
-        },
-        SinglePoint(){
-            this.$emit('point')
-        },
-        settleAccounts(){
-            this.$emit('settle')
+      date: {
+        type: [String, Number],
+        default: 0
+      }
+    },
+    data(){
+      return {
+        bottom: 0
+      }
+    },
+    mounted(){
+      if (this.$refs.context) {
+        this.$refs.alert.addEventListener('scroll', this.handleScroll)
+      }
+
+    },
+    destroyed(){
+    },
+    methods: {
+      hideFlag(bool){
+        if (typeof bool !== 'boolean') {
+          bool = !!bool;
         }
+        this.$emit('hide', bool)
+      },
+      handleScroll(event){
+        this.bottom = -event.target.scrollTop
+        console.log(this.bottom);
+      },
+      SinglePoint(){
+        this.$emit('point')
+      },
+      settleAccounts(){
+        this.$emit('settle')
+      },
+      getCurrentMoney(item){
+        let num = item.num * item.money
+        if (item.discounts.type === 1) {
+          num -= num - item.num * item.money * item.discounts.num
+        } else if (item.discounts.type === 2) {
+          num -= item.num * item.discounts.num
+        }
+        return num
       }
     }
+  }
 </script>
 
 <style scoped lang="stylus">
-    .fade-enter-active, .fade-leave-active,.scale-enter-active,.scale-leave-active
+    .fade-enter-active, .fade-leave-active, .scale-enter-active, .scale-leave-active
         transition all .3s
 
-    .fade-enter,.fade-leave-to
+    .fade-enter, .fade-leave-to
         opacity 0
-    .scale-enter,.scale-leave-to
-        transform scale(0)!important
+        transform scale(1.1)
+    .scale-enter, .scale-leave-to
+        transform scale(0) !important
 
     .full-screen
         position fixed
@@ -116,10 +127,11 @@
         right 0
         width 100vw
         height 100vh
-        background rgba(0,0,0,0.5)
+        background rgba(0, 0, 0, 0.5)
         vertical-align middle
         align-items center
         text-align center
+
     .alert
         position relative
         display inline-block
@@ -136,18 +148,18 @@
         overflow hidden auto
         margin 0 auto
         padding-bottom 50px
-        >.title
+        > .title
             border-bottom 1px solid #ccc
             display flex
             line-height 60px
             font-size 14px
-            >div
+            > div
                 flex 1 0 auto
                 text-indent 0.5em
-        >.context
+        > .context
             position relative
             width 100%
-            >.btn-group
+            > .btn-group
                 width 100%
                 position fixed
                 height 50px
@@ -159,26 +171,26 @@
                     line-height 50px
                     border none
                     float left
-                >.btn-left
+                > .btn-left
                     background #5fb870
-                >.btn-right
+                > .btn-right
                     background #ee3e41
-            >ul
+            > ul
                 position relative
-                >li
+                > li
                     display flex
                     align-content center
-                    >.cls,>.num,.money
+                    > .cls, > .num, .money
                         flex 1 0 auto
                         text-indent 1em
                         text-align left
                     .cls
                         flex 0 0 40%
                     .num
-                        flex  0 0 30%
+                        flex 0 0 30%
                     .money
                         flex 0 0 30%
-        >.btn-group
+        > .btn-group
             position absolute
             height 50px
             width 100%
@@ -196,10 +208,10 @@
             > button:hover
                 color $color-text-default
                 cursor pointer
-            >.btn-left
+            > .btn-left
                 background #5fb870
                 border-bottom-left-radius 4px
-            >.btn-right
+            > .btn-right
                 background #ee3e41
                 border-bottom-right-radius 4px
 

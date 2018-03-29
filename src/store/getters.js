@@ -18,3 +18,7 @@ export const diningList = state => state.diningList
 export const currentTable = state => state.currentTable  /* 当前桌号 */
 
 export const greenList = state => state.greenList
+
+export const maxDiscounts = state => state.maxDiscounts
+
+export const discounts = state => state.discounts

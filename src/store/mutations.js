@@ -14,5 +14,11 @@ export default {
   },
   [types.SET_GREENLIST](state,info){
     state.greenList = info
+  },
+  [types.SET_MAXDISCOUNTS](state,num){
+    state.maxDiscounts = num
+  },
+  [types.SET_CURRENTDISCOUNTS](state,discounts){
+    state.discounts = discounts
   }
 }

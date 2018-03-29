@@ -67,6 +67,7 @@
       },
       methods: {
         selectItem(item){
+
           this.showFlag = false
           this.result = 0
           if(item === '.'){
@@ -93,7 +94,6 @@
               return false
             }
           }
-
           this.process += item
 
         },
@@ -104,7 +104,7 @@
             this.result = 0
           }
           this.showFlag = true
-          this.process = ''
+          this.process = this.result
         },
         clear(){
           this.process = ''
@@ -114,7 +114,9 @@
 
         },
         back(){
-          let ret = this.process.substr(0,this.process.length - 1)
+          this.showFlag = false
+          let process = String(this.process)
+          let ret = process.substr(0,process.length - 1)
           this.process = ret
         }
       }

@@ -1,8 +1,10 @@
 在命令行中输入
 输入 npm install 加载项目依赖
 输入 npm run dev 启动项目
-输入 npm run build 打包项目,打包后的项目会在 dist 目录下
+输入 npm run build 打包项目,打包后的项目会在 dist 目录下 , 将 dist 放置服务器即可部署 项目
 目前所用框架 vue + vuex + vue-router + element-ui + axios
+
+
 
 项目入口文件： src/main.js
 
